@@ -151,7 +151,7 @@ function editRicetta(index){
     const categoria = prompt("Categoria:", r.categoria);
     if(categoria === null) return;
 
-    const ingredienti = prompt("Ingredienti (separati da \\n):", r.ingredienti);
+    const ingredienti = prompt("Ingredienti (uno per riga):", r.ingredienti);
     if(ingredienti === null) return;
 
     const procedimento = prompt("Procedimento:", r.procedimento);
