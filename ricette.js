@@ -1,14 +1,11 @@
 const $ = id => document.getElementById(id);
 
-let state = {
-    ricette: []
-};
+let state = { ricette: [] };
+let ricettaAperta = null;
 
-/* SEMAFORO BACKUP */
-
+/* SEMAFORO */
 function backupStatus(color){
     const light = $("backupLight");
-    if(!light) return;
     light.style.background = color;
     light.style.boxShadow = `0 0 10px ${color}`;
     setTimeout(()=>{
@@ -18,30 +15,46 @@ function backupStatus(color){
 }
 
 /* LOAD / SAVE */
-
 function load(){
     try{
         const s = localStorage.getItem("ricetteState");
         if(s) state = JSON.parse(s);
     }catch(e){}
-    if(!state.ricette) state.ricette = [];
 }
-
 function save(){
     localStorage.setItem("ricetteState", JSON.stringify(state));
     backupStatus("lime");
 }
+setInterval(()=>{ backupStatus("yellow"); save(); },10000);
 
+/* APRI DETTAGLIO */
+function apriDettaglio(index){
+    ricettaAperta = index;
+    const r = state.ricette[index];
 
-/* BACKUP PERIODICO */
+    $("detTitle").textContent = r.nome;
+    $("detIng").innerHTML = r.ingredienti.replace(/\n/g,"<br>");
+    $("detProc").innerHTML = r.procedimento.replace(/\n/g,"<br>");
+    $(".detMeta").textContent = "Categoria: " + r.categoria;
 
-setInterval(()=>{
-    backupStatus("yellow");
-    save();
-},10000);
+    if(r.foto){
+        $("detFoto").src = r.foto;
+        $("detFoto").style.display = "block";
+    } else {
+        $("detFoto").style.display = "none";
+    }
+
+    $("mainView").style.display = "none";
+    $("dettaglioView").style.display = "block";
+}
+
+/* CHIUDI DETTAGLIO */
+$("backBtn").onclick = ()=>{
+    $("dettaglioView").style.display = "none";
+    $("mainView").style.display = "block";
+};
 
 /* RENDER */
-
 function render(){
     const lista = $("lista");
     const search = $("searchInput").value.trim().toLowerCase();
@@ -67,49 +80,22 @@ function render(){
         div.className = "entry";
         div.dataset.index = idx;
 
-        const ingredientiCount = r.ingredienti
-            ? r.ingredienti.split("\n").filter(x=>x.trim()).length
-            : 0;
-
-        const proceduraShort = r.procedimento.length > 120
-            ? r.procedimento.slice(0,120) + "..."
-            : r.procedimento;
-
-        let fotoHtml = "";
-        if(r.foto){
-            fotoHtml = `<img src="${r.foto}" class="entryFoto" onerror="this.style.display='none'">`;
-        }
-
         div.innerHTML = `
           <div class="entryTop">
             <div>
               <div class="entryTitle">🍽️ ${r.nome}</div>
-              <div class="entryMeta">
-                Categoria: ${r.categoria || "N/D"} · Ingredienti: ${ingredientiCount}
-              </div>
+              <div class="entryMeta">Categoria: ${r.categoria}</div>
             </div>
-            ${fotoHtml}
-          </div>
-
-          <div class="entryBody">
-            <strong>Ingredienti:</strong>
-            <div>${(r.ingredienti || "").replace(/\n/g,"<br>")}</div>
-            <strong style="margin-top:6px;">Procedimento:</strong>
-            <div>${proceduraShort}</div>
-          </div>
-
-          <div class="entryActions">
-            <span class="edit">✏️</span>
-            <span class="delete">🗑</span>
           </div>
         `;
+
+        div.onclick = ()=>apriDettaglio(idx);
 
         lista.appendChild(div);
     });
 }
 
-/* AGGIUNTA RICETTA */
-
+/* AGGIUNTA */
 function addRicetta(){
     const nome = $("nomeInput").value.trim();
     const cat  = $("catInput").value.trim();
@@ -140,11 +126,9 @@ function addRicetta(){
     render();
 }
 
-/* EDIT / DELETE */
-
-function editRicetta(index){
-    const r = state.ricette[index];
-    if(!r) return;
+/* EDIT */
+$("editDetBtn").onclick = ()=>{
+    const r = state.ricette[ricettaAperta];
 
     const nome = prompt("Nome ricetta:", r.nome);
     if(nome === null) return;
@@ -169,17 +153,20 @@ function editRicetta(index){
 
     save();
     render();
-}
+    apriDettaglio(ricettaAperta);
+};
 
-function deleteRicetta(index){
+/* DELETE */
+$("deleteDetBtn").onclick = ()=>{
     if(!confirm("Eliminare questa ricetta?")) return;
-    state.ricette.splice(index,1);
+    state.ricette.splice(ricettaAperta,1);
     save();
+    $("dettaglioView").style.display = "none";
+    $("mainView").style.display = "block";
     render();
-}
+};
 
 /* EXPORT / IMPORT */
-
 $("exportBtn").onclick = ()=>{
     const blob = new Blob([JSON.stringify(state)], {type:"application/json"});
     const a = document.createElement("a");
@@ -197,7 +184,6 @@ $("fileInput").onchange = ()=>{
     r.onload = e=>{
         try{
             state = JSON.parse(e.target.result);
-            if(!state.ricette) state.ricette = [];
             save();
             render();
         }catch(err){
@@ -208,20 +194,9 @@ $("fileInput").onchange = ()=>{
 };
 
 /* EVENTI */
-
 $("addBtn").onclick = addRicetta;
-
-$("lista").onclick = e=>{
-    const entry = e.target.closest(".entry");
-    if(!entry) return;
-    const index = entry.dataset.index;
-    if(e.target.classList.contains("edit"))  editRicetta(index);
-    if(e.target.classList.contains("delete")) deleteRicetta(index);
-};
-
 $("searchInput").oninput = render;
 
 /* AVVIO */
-
 load();
 render();
