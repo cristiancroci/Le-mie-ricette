@@ -35,7 +35,7 @@ function apriDettaglio(index){
     $("detTitle").textContent = r.nome;
     $("detIng").innerHTML = r.ingredienti.replace(/\n/g,"<br>");
     $("detProc").innerHTML = r.procedimento.replace(/\n/g,"<br>");
-    $(".detMeta").textContent = "Categoria: " + r.categoria;
+    $("detMeta").textContent = "Categoria: " + r.categoria;
 
     if(r.foto){
         $("detFoto").src = r.foto;
@@ -81,12 +81,8 @@ function render(){
         div.dataset.index = idx;
 
         div.innerHTML = `
-          <div class="entryTop">
-            <div>
-              <div class="entryTitle">🍽️ ${r.nome}</div>
-              <div class="entryMeta">Categoria: ${r.categoria}</div>
-            </div>
-          </div>
+          <div class="entryTitle">🍽️ ${r.nome}</div>
+          <div class="entryMeta">Categoria: ${r.categoria}</div>
         `;
 
         div.onclick = ()=>apriDettaglio(idx);
