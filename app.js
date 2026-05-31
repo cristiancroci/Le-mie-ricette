@@ -24,7 +24,8 @@ let indexDaModificare = null;
 // -----------------------------
 async function caricaDaDrive() {
   try {
-    syncStatus.textContent = "Sync…";
+    syncStatus.textContent = "Online";
+    syncStatus.className = "status online";
 
     const res = await fetch(SCRIPT_URL);
     const text = await res.text();
@@ -32,10 +33,9 @@ async function caricaDaDrive() {
     ricette = text.trim() ? JSON.parse(text) : [];
 
     aggiornaLista();
-    syncStatus.textContent = "Online";
   } catch (err) {
-    console.error(err);
     syncStatus.textContent = "Offline";
+    syncStatus.className = "status error";
   }
 }
 
@@ -44,19 +44,22 @@ async function caricaDaDrive() {
 // -----------------------------
 async function salvaSuDrive() {
   try {
-    syncStatus.textContent = "Saving…";
+    syncStatus.textContent = "Salvataggio…";
+    syncStatus.className = "status saving";
 
     await fetch(SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify(ricette)
     });
 
-    syncStatus.textContent = "Salvato";
+    syncStatus.textContent = "Online";
+    syncStatus.className = "status online";
   } catch (err) {
-    console.error(err);
     syncStatus.textContent = "Errore";
+    syncStatus.className = "status error";
   }
 }
+
 
 // -----------------------------
 // AGGIORNA LISTA
@@ -71,16 +74,17 @@ function aggiornaLista() {
       const card = document.createElement("div");
       card.className = "card";
 
-      card.innerHTML = `
-        <h3>${r.nome}</h3>
-        <p><strong>Ingredienti:</strong><br>${r.ingredienti.replace(/\n/g, "<br>")}</p>
-        <p><strong>Procedimento:</strong><br>${r.procedimento.replace(/\n/g, "<br>")}</p>
+     card.innerHTML = `
+  <h3>${r.nome}</h3>
+  <p><strong>Ingredienti:</strong><br>${r.ingredienti.replace(/\n/g, "<br>")}</p>
+  <p><strong>Procedimento:</strong><br>${r.procedimento.replace(/\n/g, "<br>")}</p>
 
-        <div class="card-actions">
-          <button onclick="modificaRicetta(${i})">Modifica</button>
-          <button class="danger" onclick="eliminaRicetta(${i})">Elimina</button>
-        </div>
-      `;
+  <div class="card-actions">
+    <button class="btn-modifica" onclick="modificaRicetta(${i})">✏️ Modifica</button>
+    <button class="btn-elimina" onclick="eliminaRicetta(${i})">🗑️ Elimina</button>
+  </div>
+`;
+
 
       lista.appendChild(card);
     });
