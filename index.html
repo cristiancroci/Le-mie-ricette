@@ -4,64 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Le mie ricette</title>
-
-  <!-- Manifest PWA (lasciamo il tuo) -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- CSS nuovo -->
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
 
-<header>
-  <div class="title">
-    <span class="title-main">Le mie ricette</span>
-    <span class="title-sub" id="titleSub">sempre con te</span>
+  <header>
+    <div>
+      <div class="title-main">Le mie ricette</div>
+      <div class="title-sub">Sempre con te</div>
+    </div>
+    <div id="syncStatus" class="status online">Online</div>
+  </header>
+
+  <div class="top-bar">
+    <input id="searchInput" type="text" placeholder="Cerca ricetta…">
+    <button id="addBtn">+ Nuova</button>
   </div>
-  <div class="status" id="syncStatus">Sync…</div>
-</header>
 
-<div class="top-bar">
-  <input id="searchInput" type="text" placeholder="Cerca ricetta..." />
-  <button id="addBtn" class="primary">+ Nuova</button>
-</div>
-
-<main>
   <div id="lista" class="cards"></div>
-</main>
 
-<!-- Modale per aggiunta/modifica -->
-<div id="modal" class="modal hidden">
-  <div class="modal-content">
-    <h2 id="modalTitle">Nuova ricetta</h2>
+  <!-- MODALE -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="modalTitle">Nuova ricetta</h2>
 
-    <label>Titolo</label>
-    <input id="nomeInput" type="text">
+      <label>Titolo</label>
+      <input id="nomeInput" type="text">
 
-    <label>Ingredienti (uno per riga)</label>
-    <textarea id="ingredientiInput" rows="5"></textarea>
+      <label>Ingredienti (uno per riga)</label>
+      <textarea id="ingredientiInput" rows="4"></textarea>
 
-    <label>Procedimento</label>
-    <textarea id="procedimentoInput" rows="6"></textarea>
+      <label>Procedimento</label>
+      <textarea id="procedimentoInput" rows="4"></textarea>
 
-    <div class="modal-actions">
-      <button id="cancelBtn">Annulla</button>
-      <button id="saveBtn" class="primary">Salva</button>
+      <div class="modal-actions">
+        <button id="cancelBtn">Annulla</button>
+        <button id="saveBtn" class="primary">Salva</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="app.js"></script>
+  <!-- BANNER DI SICUREZZA -->
+  <div id="confirmBanner" class="confirm-banner hidden">
+    <span>Vuoi eliminare questa ricetta?</span>
+    <div class="confirm-actions">
+      <button id="cancelDeleteBtn">Annulla</button>
+      <button id="confirmDeleteBtn" class="danger">Elimina</button>
+    </div>
+  </div>
 
-<script>
-  // Registrazione service worker PWA (usa il tuo service-worker.js)
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .catch(err => console.log('SW error', err));
-    });
-  }
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
