@@ -1,4 +1,4 @@
-const CACHE_NAME = "ricette-cache-v6";
+const CACHE_NAME = "ricette-cache-v8";
 const FILES_TO_CACHE = [
   "./",
   "index.html",
