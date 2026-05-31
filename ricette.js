@@ -1,124 +1,265 @@
-let ricette = [];
+const $ = id => document.getElementById(id);
 
-window.onload = () => {
-  carica();
-  mostraLista();
+/* ============================================================
+   CONFIGURAZIONE GOOGLE DRIVE
+   ============================================================ */
+
+const FILE_ID = "1w70GGIg_n980hvCRZxLC-E2JT7P-oLKz";
+const DRIVE_URL = `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
+const DRIVE_UPLOAD = `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
+
+let state = { ricette: [] };
+let ricettaAperta = null;
+
+/* ============================================================
+   SEMAFORO BACKUP
+   ============================================================ */
+
+function backupStatus(color){
+    const light = $("backupLight");
+    if(!light) return;
+    light.style.background = color;
+    light.style.boxShadow = `0 0 10px ${color}`;
+    setTimeout(()=>{
+        light.style.background = "#444";
+        light.style.boxShadow = "0 0 6px rgba(0,0,0,0.4)";
+    },1500);
+}
+
+/* ============================================================
+   CARICAMENTO DA GOOGLE DRIVE
+   ============================================================ */
+
+async function loadFromDrive(){
+    try{
+        const res = await fetch(DRIVE_URL);
+        const data = await res.json();
+        if(data.ricette){
+            state = data;
+            localStorage.setItem("ricetteState", JSON.stringify(state));
+            backupStatus("lime");
+        }
+    }catch(e){
+        console.log("Errore caricamento Drive, uso locale");
+        const local = localStorage.getItem("ricetteState");
+        if(local) state = JSON.parse(local);
+    }
+}
+
+/* ============================================================
+   SALVATAGGIO SU GOOGLE DRIVE
+   ============================================================ */
+
+async function saveToDrive(){
+    try{
+        await fetch(DRIVE_UPLOAD, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(state)
+        });
+        localStorage.setItem("ricetteState", JSON.stringify(state));
+        backupStatus("lime");
+    }catch(e){
+        console.log("Errore salvataggio Drive");
+        backupStatus("red");
+    }
+}
+
+/* ============================================================
+   RENDER LISTA
+   ============================================================ */
+
+function render(){
+    const lista = $("lista");
+    const search = $("searchInput").value.trim().toLowerCase();
+
+    lista.innerHTML = "";
+
+    let ricette = state.ricette;
+
+    if(search){
+        ricette = ricette.filter(r =>
+            r.nome.toLowerCase().includes(search) ||
+            r.categoria.toLowerCase().includes(search)
+        );
+    }
+
+    if(ricette.length === 0){
+        lista.innerHTML = `<div class="empty">Nessuna ricetta trovata.</div>`;
+        return;
+    }
+
+    ricette.forEach((r, idx) => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.dataset.index = idx;
+
+        div.innerHTML = `
+          <div class="entryTitle">🍽️ ${r.nome}</div>
+          <div class="entryMeta">Categoria: ${r.categoria}</div>
+        `;
+
+        div.onclick = ()=>apriDettaglio(idx);
+
+        lista.appendChild(div);
+    });
+}
+
+/* ============================================================
+   APRI DETTAGLIO
+   ============================================================ */
+
+function apriDettaglio(index){
+    ricettaAperta = index;
+    const r = state.ricette[index];
+
+    $("detTitle").textContent = r.nome;
+    $("detIng").innerHTML = r.ingredienti.replace(/\n/g,"<br>");
+    $("detProc").innerHTML = r.procedimento.replace(/\n/g,"<br>");
+    $("detMeta").textContent = "Categoria: " + r.categoria;
+
+    if(r.foto){
+        $("detFoto").src = r.foto;
+        $("detFoto").style.display = "block";
+    } else {
+        $("detFoto").style.display = "none";
+    }
+
+    $("mainView").style.display = "none";
+    $("dettaglioView").style.display = "block";
+}
+
+/* ============================================================
+   CHIUDI DETTAGLIO
+   ============================================================ */
+
+$("backBtn").onclick = ()=>{
+    $("dettaglioView").style.display = "none";
+    $("mainView").style.display = "block";
 };
 
-function carica() {
-  const salvate = localStorage.getItem("ricette");
-  if (salvate) ricette = JSON.parse(salvate);
+/* ============================================================
+   AGGIUNTA RICETTA
+   ============================================================ */
+
+function addRicetta(){
+    const nome = $("nomeInput").value.trim();
+    const cat  = $("catInput").value.trim();
+    const ing  = $("ingInput").value.trim();
+    const proc = $("procInput").value.trim();
+    const foto = $("fotoInput").value.trim();
+
+    if(!nome || !proc){
+        alert("Nome e procedimento sono obbligatori.");
+        return;
+    }
+
+    state.ricette.push({
+        nome,
+        categoria: cat || "Altro",
+        ingredienti: ing,
+        procedimento: proc,
+        foto
+    });
+
+    $("nomeInput").value = "";
+    $("catInput").value = "";
+    $("ingInput").value = "";
+    $("procInput").value = "";
+    $("fotoInput").value = "";
+
+    saveToDrive();
+    render();
 }
 
-function salva() {
-  localStorage.setItem("ricette", JSON.stringify(ricette));
-}
+/* ============================================================
+   EDIT
+   ============================================================ */
 
-function mostraLista() {
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+$("editDetBtn").onclick = ()=>{
+    const r = state.ricette[ricettaAperta];
 
-  if (ricette.length === 0) {
-    lista.innerHTML = "<p>Nessuna ricetta trovata</p>";
-    return;
-  }
+    const nome = prompt("Nome ricetta:", r.nome);
+    if(nome === null) return;
 
-  ricette.forEach((r, i) => {
-    const div = document.createElement("div");
-    div.className = "entry";
-    div.onclick = () => mostraDettaglio(i);
+    const categoria = prompt("Categoria:", r.categoria);
+    if(categoria === null) return;
 
-    div.innerHTML = `
-      <div class="entryTitle">${r.nome}</div>
-      <div class="entryMeta">${r.ingredienti.length} ingredienti</div>
-    `;
+    const ingredienti = prompt("Ingredienti (uno per riga):", r.ingredienti);
+    if(ingredienti === null) return;
 
-    lista.appendChild(div);
-  });
-}
+    const procedimento = prompt("Procedimento:", r.procedimento);
+    if(procedimento === null) return;
 
-document.getElementById("addBtn").onclick = mostraFormAggiunta;
+    const foto = prompt("URL foto:", r.foto || "");
+    if(foto === null) return;
 
-function mostraFormAggiunta() {
-  const nome = prompt("Nome ricetta:");
-  if (!nome) return;
+    r.nome = nome.trim() || r.nome;
+    r.categoria = categoria.trim() || r.categoria;
+    r.ingredienti = ingredienti;
+    r.procedimento = procedimento;
+    r.foto = foto.trim();
 
-  const ingr = prompt("Ingredienti (separati da virgola):");
-  const listaIngr = ingr ? ingr.split(",").map(x => x.trim()) : [];
+    saveToDrive();
+    render();
+    apriDettaglio(ricettaAperta);
+};
 
-  const proc = prompt("Procedimento:");
-  
-  ricette.push({
-    nome: nome,
-    ingredienti: listaIngr,
-    procedimento: proc
-  });
+/* ============================================================
+   DELETE
+   ============================================================ */
 
-  salva();
-  mostraLista();
-}
+$("deleteDetBtn").onclick = ()=>{
+    if(!confirm("Eliminare questa ricetta?")) return;
+    state.ricette.splice(ricettaAperta,1);
+    saveToDrive();
+    $("dettaglioView").style.display = "none";
+    $("mainView").style.display = "block";
+    render();
+};
 
-function mostraDettaglio(i) {
-  const r = ricette[i];
-  alert(
-    r.nome +
-    "\n\nIngredienti:\n" +
-    r.ingredienti.join("\n") +
-    "\n\nProcedimento:\n" +
-    r.procedimento
-  );
-}
+/* ============================================================
+   EXPORT / IMPORT (non più necessari ma lasciati)
+   ============================================================ */
 
-function esportaRicette() {
-  const blob = new Blob([JSON.stringify(ricette)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
+$("exportBtn").onclick = ()=>{
+    const blob = new Blob([JSON.stringify(state)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "ricette.json";
+    a.click();
+};
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ricette.json";
-  a.click();
-}
+$("importBtn").onclick = ()=> $("fileInput").click();
 
-function importaRicette() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "application/json";
-
-  input.onchange = e => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      ricette = JSON.parse(reader.result);
-      salva();
-      mostraLista();
+$("fileInput").onchange = ()=>{
+    const f = $("fileInput").files[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = e=>{
+        try{
+            state = JSON.parse(e.target.result);
+            saveToDrive();
+            render();
+        }catch(err){
+            alert("File non valido.");
+        }
     };
+    r.readAsText(f);
+};
 
-    reader.readAsText(file);
-  };
+/* ============================================================
+   EVENTI
+   ============================================================ */
 
-  input.click();
-}
+$("addBtn").onclick = addRicetta;
+$("searchInput").oninput = render;
 
-function filtraRicette() {
-  const q = document.getElementById("searchInput").value.toLowerCase();
-  const filtrate = ricette.filter(r => r.nome.toLowerCase().includes(q));
+/* ============================================================
+   AVVIO
+   ============================================================ */
 
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
-
-  if (filtrate.length === 0) {
-    lista.innerHTML = "<p>Nessuna ricetta trovata</p>";
-    return;
-  }
-
-  filtrate.forEach((r, i) => {
-    const div = document.createElement("div");
-    div.className = "entry";
-    div.innerHTML = `
-      <div class="entryTitle">${r.nome}</div>
-      <div class="entryMeta">${r.ingredienti.length} ingredienti</div>
-    `;
-    lista.appendChild(div);
-  });
-}
+(async ()=>{
+    await loadFromDrive();
+    render();
+})();
