@@ -1,11 +1,12 @@
-// 🔗 URL della tua Web App Apps Script (GET = leggi, POST = scrivi)
+// URL della tua Web App Apps Script
+// GET  -> restituisce { ricette: [...] }
+// POST -> salva { ricette: [...] } su Drive
 const SCRIPT_URL = "https://script.google.com/macros/s/XXX_TUA_WEB_APP_URL_XXX/exec";
 
 let ricette = [];
 let ricettaInModifica = null;
-let ultimoSalvataggio = 0;
 
-// Frasi cangianti nel sottotitolo
+// frasi animate nel sottotitolo
 const sottotitoli = [
   "sempre con te",
   "sincronizzate su tutti i dispositivi",
@@ -16,19 +17,19 @@ const sottotitoli = [
 
 window.addEventListener("load", () => {
   setupUI();
-  cambiaSottotitolo();
+  animaSottotitolo();
   caricaDaDrive();
   setInterval(backupAutomatico, 10000); // ogni 10 secondi
 });
 
 function setupUI() {
-  document.getElementById("addBtn").onclick = () => apriModalNuova();
+  document.getElementById("addBtn").onclick = apriModalNuova;
   document.getElementById("cancelBtn").onclick = chiudiModal;
   document.getElementById("saveBtn").onclick = salvaDaModal;
   document.getElementById("searchInput").oninput = renderLista;
 }
 
-function cambiaSottotitolo() {
+function animaSottotitolo() {
   const el = document.getElementById("titleSub");
   let i = 0;
   setInterval(() => {
@@ -43,9 +44,7 @@ function setStatus(text, color = "rgba(0,0,0,0.25)") {
   el.style.background = color;
 }
 
-/* ==========================
-   CARICAMENTO / SALVATAGGIO
-   ========================== */
+/* ====== DRIVE ====== */
 
 async function caricaDaDrive() {
   try {
@@ -66,10 +65,9 @@ async function salvaSuDrive() {
     setStatus("Salvo…", "rgba(241, 196, 15,0.9)");
     await fetch(SCRIPT_URL, {
       method: "POST",
-      contentType: "application/json",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ricette })
     });
-    ultimoSalvataggio = Date.now();
     setStatus("Salvato", "rgba(46, 204, 113,0.9)");
   } catch (e) {
     console.error(e);
@@ -78,15 +76,12 @@ async function salvaSuDrive() {
 }
 
 function backupAutomatico() {
-  // se ci sono ricette, prova a salvare
   if (ricette.length > 0) {
     salvaSuDrive();
   }
 }
 
-/* ==========================
-   RENDER LISTA
-   ========================== */
+/* ====== LISTA ====== */
 
 function renderLista() {
   const lista = document.getElementById("lista");
@@ -94,7 +89,7 @@ function renderLista() {
 
   const q = document.getElementById("searchInput").value.toLowerCase().trim();
   const filtrate = ricette.filter(r =>
-    r.nome.toLowerCase().includes(q)
+    (r.nome || "").toLowerCase().includes(q)
   );
 
   if (filtrate.length === 0) {
@@ -152,9 +147,7 @@ function renderLista() {
   });
 }
 
-/* ==========================
-   MODALE
-   ========================== */
+/* ====== MODALE ====== */
 
 function apriModalNuova() {
   ricettaInModifica = null;
