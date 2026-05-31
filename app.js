@@ -1,7 +1,7 @@
 // URL della tua Web App Apps Script
 // GET  -> restituisce { ricette: [...] }
 // POST -> salva { ricette: [...] } su Drive
-const SCRIPT_URL = "https://script.google.com/macros/s/XXX_TUA_WEB_APP_URL_XXX/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4-v6YsBlqdJ7by9t793VuCXcunbQYvitdfU_j9XFXi1p2RIxqWs4r8wzSLHvaRJsR/exec";
 
 let ricette = [];
 let ricettaInModifica = null;
