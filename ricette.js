@@ -1,11 +1,23 @@
 const $ = id => document.getElementById(id);
 
+/* ============================================================
+   CONFIGURAZIONE GOOGLE DRIVE
+   ============================================================ */
+
+const FILE_ID = "1w70GGIg_n980hvCRZxLC-E2JT7P-oLKz";
+const DRIVE_URL = `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
+const DRIVE_UPLOAD = `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
+
 let state = { ricette: [] };
 let ricettaAperta = null;
 
-/* SEMAFORO */
+/* ============================================================
+   SEMAFORO BACKUP
+   ============================================================ */
+
 function backupStatus(color){
     const light = $("backupLight");
+    if(!light) return;
     light.style.background = color;
     light.style.boxShadow = `0 0 10px ${color}`;
     setTimeout(()=>{
@@ -14,47 +26,49 @@ function backupStatus(color){
     },1500);
 }
 
-/* LOAD / SAVE */
-function load(){
+/* ============================================================
+   CARICAMENTO DA GOOGLE DRIVE
+   ============================================================ */
+
+async function loadFromDrive(){
     try{
-        const s = localStorage.getItem("ricetteState");
-        if(s) state = JSON.parse(s);
-    }catch(e){}
-}
-function save(){
-    localStorage.setItem("ricetteState", JSON.stringify(state));
-    backupStatus("lime");
-}
-setInterval(()=>{ backupStatus("yellow"); save(); },10000);
-
-/* APRI DETTAGLIO */
-function apriDettaglio(index){
-    ricettaAperta = index;
-    const r = state.ricette[index];
-
-    $("detTitle").textContent = r.nome;
-    $("detIng").innerHTML = r.ingredienti.replace(/\n/g,"<br>");
-    $("detProc").innerHTML = r.procedimento.replace(/\n/g,"<br>");
-    $("detMeta").textContent = "Categoria: " + r.categoria;
-
-    if(r.foto){
-        $("detFoto").src = r.foto;
-        $("detFoto").style.display = "block";
-    } else {
-        $("detFoto").style.display = "none";
+        const res = await fetch(DRIVE_URL);
+        const data = await res.json();
+        if(data.ricette){
+            state = data;
+            localStorage.setItem("ricetteState", JSON.stringify(state));
+            backupStatus("lime");
+        }
+    }catch(e){
+        console.log("Errore caricamento Drive, uso locale");
+        const local = localStorage.getItem("ricetteState");
+        if(local) state = JSON.parse(local);
     }
-
-    $("mainView").style.display = "none";
-    $("dettaglioView").style.display = "block";
 }
 
-/* CHIUDI DETTAGLIO */
-$("backBtn").onclick = ()=>{
-    $("dettaglioView").style.display = "none";
-    $("mainView").style.display = "block";
-};
+/* ============================================================
+   SALVATAGGIO SU GOOGLE DRIVE
+   ============================================================ */
 
-/* RENDER */
+async function saveToDrive(){
+    try{
+        await fetch(DRIVE_UPLOAD, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(state)
+        });
+        localStorage.setItem("ricetteState", JSON.stringify(state));
+        backupStatus("lime");
+    }catch(e){
+        console.log("Errore salvataggio Drive");
+        backupStatus("red");
+    }
+}
+
+/* ============================================================
+   RENDER LISTA
+   ============================================================ */
+
 function render(){
     const lista = $("lista");
     const search = $("searchInput").value.trim().toLowerCase();
@@ -91,7 +105,43 @@ function render(){
     });
 }
 
-/* AGGIUNTA */
+/* ============================================================
+   APRI DETTAGLIO
+   ============================================================ */
+
+function apriDettaglio(index){
+    ricettaAperta = index;
+    const r = state.ricette[index];
+
+    $("detTitle").textContent = r.nome;
+    $("detIng").innerHTML = r.ingredienti.replace(/\n/g,"<br>");
+    $("detProc").innerHTML = r.procedimento.replace(/\n/g,"<br>");
+    $("detMeta").textContent = "Categoria: " + r.categoria;
+
+    if(r.foto){
+        $("detFoto").src = r.foto;
+        $("detFoto").style.display = "block";
+    } else {
+        $("detFoto").style.display = "none";
+    }
+
+    $("mainView").style.display = "none";
+    $("dettaglioView").style.display = "block";
+}
+
+/* ============================================================
+   CHIUDI DETTAGLIO
+   ============================================================ */
+
+$("backBtn").onclick = ()=>{
+    $("dettaglioView").style.display = "none";
+    $("mainView").style.display = "block";
+};
+
+/* ============================================================
+   AGGIUNTA RICETTA
+   ============================================================ */
+
 function addRicetta(){
     const nome = $("nomeInput").value.trim();
     const cat  = $("catInput").value.trim();
@@ -118,11 +168,14 @@ function addRicetta(){
     $("procInput").value = "";
     $("fotoInput").value = "";
 
-    save();
+    saveToDrive();
     render();
 }
 
-/* EDIT */
+/* ============================================================
+   EDIT
+   ============================================================ */
+
 $("editDetBtn").onclick = ()=>{
     const r = state.ricette[ricettaAperta];
 
@@ -147,22 +200,28 @@ $("editDetBtn").onclick = ()=>{
     r.procedimento = procedimento;
     r.foto = foto.trim();
 
-    save();
+    saveToDrive();
     render();
     apriDettaglio(ricettaAperta);
 };
 
-/* DELETE */
+/* ============================================================
+   DELETE
+   ============================================================ */
+
 $("deleteDetBtn").onclick = ()=>{
     if(!confirm("Eliminare questa ricetta?")) return;
     state.ricette.splice(ricettaAperta,1);
-    save();
+    saveToDrive();
     $("dettaglioView").style.display = "none";
     $("mainView").style.display = "block";
     render();
 };
 
-/* EXPORT / IMPORT */
+/* ============================================================
+   EXPORT / IMPORT (non più necessari ma lasciati)
+   ============================================================ */
+
 $("exportBtn").onclick = ()=>{
     const blob = new Blob([JSON.stringify(state)], {type:"application/json"});
     const a = document.createElement("a");
@@ -180,7 +239,7 @@ $("fileInput").onchange = ()=>{
     r.onload = e=>{
         try{
             state = JSON.parse(e.target.result);
-            save();
+            saveToDrive();
             render();
         }catch(err){
             alert("File non valido.");
@@ -189,10 +248,18 @@ $("fileInput").onchange = ()=>{
     r.readAsText(f);
 };
 
-/* EVENTI */
+/* ============================================================
+   EVENTI
+   ============================================================ */
+
 $("addBtn").onclick = addRicetta;
 $("searchInput").oninput = render;
 
-/* AVVIO */
-load();
-render();
+/* ============================================================
+   AVVIO
+   ============================================================ */
+
+(async ()=>{
+    await loadFromDrive();
+    render();
+})();
