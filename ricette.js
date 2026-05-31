@@ -9,6 +9,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4-v6YsBlqdJ7by9t79
 let state = { ricette: [] };
 let ricettaAperta = null;
 
+
 /* ============================================================
    SEMAFORO BACKUP
    ============================================================ */
