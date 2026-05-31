@@ -1,212 +1,80 @@
-* {
-  box-sizing: border-box;
+/* -------------------------
+   COLORI CANGIANTI GLOBALI
+--------------------------*/
+
+@keyframes greenGlow {
+  0% { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+  50% { background: #00cc66; box-shadow: 0 0 16px #00cc66; }
+  100% { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
 }
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #ffe0c2, #f0f0f0);
+@keyframes orangeGlow {
+  0% { background: #ffb347; box-shadow: 0 0 8px #ffb347; }
+  50% { background: #ff8c00; box-shadow: 0 0 16px #ff8c00; }
+  100% { background: #ffb347; box-shadow: 0 0 8px #ffb347; }
+}
+
+@keyframes redGlow {
+  0% { background: #ff4d4d; box-shadow: 0 0 8px #ff4d4d; }
+  50% { background: #ff0000; box-shadow: 0 0 16px #ff0000; }
+  100% { background: #ff4d4d; box-shadow: 0 0 8px #ff4d4d; }
+}
+
+/* -------------------------
+   STATUS (ONLINE / SALVA / ERRORE)
+--------------------------*/
+
+.status {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
+}
+
+.status.online {
+  animation: greenGlow 3s infinite;
+}
+
+.status.saving {
+  animation: orangeGlow 3s infinite;
+}
+
+.status.error {
+  animation: redGlow 3s infinite;
+}
+
+/* -------------------------
+   CARDS
+--------------------------*/
+
+.card h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
   color: #222;
 }
 
-/* HEADER */
+/* -------------------------
+   BOTTONI MODIFICA / ELIMINA
+--------------------------*/
 
-header {
-  background: linear-gradient(120deg, #ff8c42, #ff5f6d);
-  color: white;
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-}
-
-.title-main {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.title-sub {
-  display: block;
-  font-size: 13px;
-  opacity: 0.9;
-  animation: fadeText 6s infinite;
-}
-
-@keyframes fadeText {
-  0% { opacity: 0.2; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0.2; }
-}
-
-.status {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.25);
-}
-
-/* TOP BAR */
-
-.top-bar {
-  display: flex;
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-#searchInput {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-button.primary {
-  background: #ff8c42;
+.btn-modifica {
+  animation: greenGlow 3s infinite;
   color: white;
   border: none;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  font-size: 15px;
 }
 
-/* LISTA CARDS */
-
-main {
-  padding: 10px 12px 80px;
-}
-
-.cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card {
-  background: rgba(255,255,255,0.96);
-  border-radius: 14px;
-  padding: 12px 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  border: 1px solid rgba(255,140,66,0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-title {
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.card-meta {
-  font-size: 12px;
-  color: #666;
-}
-
-.card-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.card-actions button {
-  border: none;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.btn-edit {
-  background: #4caf50;
+.btn-elimina {
+  animation: redGlow 3s infinite;
   color: white;
-}
-
-.btn-delete {
-  background: #e53935;
-  color: white;
-}
-
-/* MODALE */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-
-.modal.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 16px 18px;
-  width: 95%;
-  max-width: 480px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.modal-content label {
-  display: block;
-  font-size: 13px;
-  margin-top: 8px;
-  margin-bottom: 4px;
-}
-
-.modal-content input,
-.modal-content textarea {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.modal-actions button {
-  padding: 7px 12px;
-  border-radius: 999px;
   border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-}
-
-#cancelBtn {
-  background: #ddd;
-}
-
-/* RESPONSIVE */
-
-@media (min-width: 768px) {
-  main {
-    max-width: 700px;
-    margin: 0 auto;
-  }
+  font-size: 15px;
 }
