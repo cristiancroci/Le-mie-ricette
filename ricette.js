@@ -1,12 +1,10 @@
 const $ = id => document.getElementById(id);
 
 /* ============================================================
-   CONFIGURAZIONE GOOGLE DRIVE
+   CONFIGURAZIONE APPS SCRIPT
    ============================================================ */
 
-const FILE_ID = "1w70GGIg_n980hvCRZxLC-E2JT7P-oLKz";
-const DRIVE_URL = `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
-const DRIVE_UPLOAD = `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=media&key=AIzaSyC4lH-1BBXzohaq5ahdFDjdJ9amyVxOKMY`;
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7at7fCSzHPNrVKYnPA4RIVb09Bm4TSiaOTwG8zlVCy5RLH09L7w2cCqEL4PaeSuoP/exec";
 
 let state = { ricette: [] };
 let ricettaAperta = null;
@@ -27,12 +25,12 @@ function backupStatus(color){
 }
 
 /* ============================================================
-   CARICAMENTO DA GOOGLE DRIVE
+   CARICAMENTO DA APPS SCRIPT
    ============================================================ */
 
 async function loadFromDrive(){
     try{
-        const res = await fetch(DRIVE_URL);
+        const res = await fetch(SCRIPT_URL);
         const data = await res.json();
         if(data.ricette){
             state = data;
@@ -40,27 +38,27 @@ async function loadFromDrive(){
             backupStatus("lime");
         }
     }catch(e){
-        console.log("Errore caricamento Drive, uso locale");
+        console.log("Errore caricamento, uso locale", e);
         const local = localStorage.getItem("ricetteState");
         if(local) state = JSON.parse(local);
     }
 }
 
 /* ============================================================
-   SALVATAGGIO SU GOOGLE DRIVE
+   SALVATAGGIO SU APPS SCRIPT
    ============================================================ */
 
 async function saveToDrive(){
     try{
-        await fetch(DRIVE_UPLOAD, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
             body: JSON.stringify(state)
         });
         localStorage.setItem("ricetteState", JSON.stringify(state));
         backupStatus("lime");
     }catch(e){
-        console.log("Errore salvataggio Drive");
+        console.log("Errore salvataggio", e);
         backupStatus("red");
     }
 }
@@ -219,7 +217,7 @@ $("deleteDetBtn").onclick = ()=>{
 };
 
 /* ============================================================
-   EXPORT / IMPORT (non più necessari ma lasciati)
+   EXPORT / IMPORT
    ============================================================ */
 
 $("exportBtn").onclick = ()=>{
