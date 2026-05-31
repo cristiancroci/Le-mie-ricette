@@ -2,91 +2,68 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Le mie ricette</title>
+
 <link rel="stylesheet" href="ricette.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff8c42">
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
 </head>
 
 <body>
-<div class="app">
 
-  <!-- SCHERMATA PRINCIPALE -->
-  <div id="mainView">
+<header>
+    <h1>Le mie ricette</h1>
+    <div id="backupLight"></div>
+</header>
 
-    <div class="titleRow">
-      <h1 class="titleBox">𝓛𝓮 𝓶𝓲𝓮 𝓡𝓲𝓬𝓮𝓽𝓽𝓮</h1>
-      <div id="backupLight" class="backupLight"></div>
+<main id="mainView">
+
+    <input id="searchInput" type="text" placeholder="Cerca ricetta...">
+
+    <div id="lista"></div>
+
+    <button id="addBtn" class="floatingBtn">＋</button>
+
+</main>
+
+<section id="dettaglioView" style="display:none;">
+
+    <button id="backBtn" class="backBtn">←</button>
+
+    <h2 id="detTitle"></h2>
+
+    <img id="detFoto" style="display:none; max-width:100%; border-radius:10px; margin-bottom:10px;">
+
+    <div class="box">
+        <h3>Ingredienti</h3>
+        <div id="detIng"></div>
     </div>
 
-    <div class="subtitle">Archivio ricette personale</div>
-
-    <div class="card">
-      <h3>Nuova ricetta</h3>
-
-      <input id="nomeInput" placeholder="Nome ricetta">
-
-      <select id="catInput">
-        <option value="">Categoria</option>
-        <option>Primo</option>
-        <option>Secondo</option>
-        <option>Contorno</option>
-        <option>Dolce</option>
-        <option>Snack</option>
-        <option>Bevanda</option>
-        <option>Altro</option>
-      </select>
-
-      <textarea id="ingInput" rows="4" placeholder="Ingredienti (uno per riga)"></textarea>
-
-      <textarea id="procInput" rows="4" placeholder="Procedimento"></textarea>
-
-      <input id="fotoInput" placeholder="URL foto (opzionale)">
-
-      <button class="btn" id="addBtn">➕ Aggiungi ricetta</button>
-
-      <div class="btn-row">
-        <button class="btn-export" id="exportBtn">⬇️ Esporta</button>
-        <button class="btn-import" id="importBtn">⬆️ Importa</button>
-      </div>
-
-      <input type="file" id="fileInput" accept="application/json">
+    <div class="box">
+        <h3>Procedimento</h3>
+        <div id="detProc"></div>
     </div>
 
-    <div class="card">
-      <h3>Ricerca</h3>
-      <input id="searchInput" placeholder="Cerca per nome o categoria">
+    <div id="detMeta"></div>
+
+    <div class="detBtns">
+        <button id="editDetBtn" class="editBtn">Modifica</button>
+        <button id="deleteDetBtn" class="deleteBtn">Elimina</button>
     </div>
 
-    <div class="card">
-      <h3>Le tue ricette</h3>
-      <div id="lista"></div>
-    </div>
+</section>
 
-  </div>
-
-  <!-- SCHERMATA DETTAGLIO -->
-  <div id="dettaglioView" style="display:none;">
-    <button class="btn-small" id="backBtn">⬅ Torna indietro</button>
-
-    <div class="card">
-      <h2 id="detTitle"></h2>
-      <img id="detFoto" class="detFoto" style="display:none;">
-      <div id="detMeta" class="detMeta"></div>
-
-      <h3>Ingredienti</h3>
-      <div id="detIng"></div>
-
-      <h3>Procedimento</h3>
-      <div id="detProc"></div>
-
-      <div class="btn-row">
-        <button class="btn-small" id="editDetBtn">✏️ Modifica</button>
-        <button class="btn-small" id="deleteDetBtn">🗑 Elimina</button>
-      </div>
-    </div>
-  </div>
-
-</div>
+<input type="file" id="fileInput" accept="application/json" style="display:none;">
+<button id="exportBtn" class="exportBtn">Esporta</button>
+<button id="importBtn" class="importBtn">Importa</button>
 
 <script src="ricette.js"></script>
 </body>
