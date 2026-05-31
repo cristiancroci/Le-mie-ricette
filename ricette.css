@@ -1,118 +1,121 @@
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#fafafa;
-    color:#222;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  color: #222;
 }
 
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px;
-    background:#ff8c42;
-    color:white;
+header {
+  background: #ff8c42;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 22px;
+  font-weight: bold;
 }
 
-#backupLight{
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    background:#444;
-    box-shadow:0 0 6px rgba(0,0,0,0.4);
+#backupLight {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #444;
+  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  position: absolute;
+  top: 18px;
+  right: 18px;
 }
 
-#searchInput{
-    width:90%;
-    margin:15px auto;
-    display:block;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
+#searchInput {
+  width: 90%;
+  margin: 15px auto;
+  display: block;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-#lista{
-    padding:10px;
+#lista {
+  padding: 10px;
 }
 
-.entry{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
-    cursor:pointer;
+.entry {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
 
-.entryTitle{
-    font-size:18px;
-    font-weight:bold;
+.entryTitle {
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.entryMeta{
-    font-size:14px;
-    color:#666;
+.entryMeta {
+  font-size: 14px;
+  color: #666;
 }
 
-.floatingBtn{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#ff8c42;
-    color:white;
-    border:none;
-    border-radius:50%;
-    width:60px;
-    height:60px;
-    font-size:30px;
-    cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+.floatingBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff8c42;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.backBtn{
-    margin:10px;
-    padding:10px;
-    font-size:20px;
+.backBtn {
+  margin: 10px;
+  padding: 10px;
+  font-size: 20px;
 }
 
-.box{
-    background:white;
-    padding:15px;
-    margin:10px;
-    border-radius:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+.box {
+  background: white;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.detBtns{
-    display:flex;
-    justify-content:space-around;
-    margin:20px;
+.detBtns {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
 }
 
-.editBtn{
-    background:#4caf50;
-    color:white;
-    padding:10px 20px;
-    border:none;
-    border-radius:8px;
+.editBtn {
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
 }
 
-.deleteBtn{
-    background:#e53935;
-    color:white;
-    padding:10px 20px;
-    border:none;
-    border-radius:8px;
+.deleteBtn {
+  background: #e53935;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
 }
 
-.exportBtn, .importBtn{
-    position:fixed;
-    bottom:20px;
-    left:20px;
-    background:#555;
-    color:white;
-    padding:10px 15px;
-    border:none;
-    border-radius:8px;
-    margin-right:10px;
+.exportBtn, .importBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #555;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  margin-right: 10px;
 }
