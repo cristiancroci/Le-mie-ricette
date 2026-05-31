@@ -7,11 +7,7 @@
 
 body {
   font-family: system-ui, sans-serif;
-  background: 
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.9), rgba(240,240,240,0.7)),
-    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.9), rgba(230,230,230,0.6)),
-    linear-gradient(135deg, #f7f3ef, #e9e3dd);
-  background-blend-mode: soft-light, overlay, normal;
+  background: linear-gradient(135deg, #ffecd2, #fcb69f);
   color: #222;
   padding: 20px;
 }
