@@ -4,24 +4,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Le mie ricette</title>
-  <link rel="stylesheet" href="ricette.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <header>
-  Le mie ricette
+  <div class="title">
+    <span class="title-main">Le mie ricette</span>
+    <span class="title-sub" id="titleSub">sempre con te</span>
+  </div>
+  <div class="status" id="syncStatus">Sync…</div>
 </header>
 
-<input id="searchInput" type="text" placeholder="Cerca ricetta..." oninput="filtraRicette()">
+<div class="top-bar">
+  <input id="searchInput" type="text" placeholder="Cerca ricetta..." />
+  <button id="addBtn" class="primary">+ Nuova</button>
+</div>
 
-<div id="lista"></div>
+<main>
+  <div id="lista" class="cards"></div>
+</main>
 
-<button id="addBtn" class="floatingBtn">+</button>
+<!-- Modale per aggiunta/modifica -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <h2 id="modalTitle">Nuova ricetta</h2>
 
-<button class="importBtn" onclick="importaRicette()">Importa</button>
-<button class="exportBtn" onclick="esportaRicette()">Esporta</button>
+    <label>Titolo</label>
+    <input id="nomeInput" type="text">
 
-<script src="ricette.js"></script>
+    <label>Ingredienti (uno per riga)</label>
+    <textarea id="ingredientiInput" rows="5"></textarea>
+
+    <label>Procedimento</label>
+    <textarea id="procedimentoInput" rows="6"></textarea>
+
+    <div class="modal-actions">
+      <button id="cancelBtn">Annulla</button>
+      <button id="saveBtn" class="primary">Salva</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
