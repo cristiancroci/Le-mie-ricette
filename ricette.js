@@ -4,7 +4,7 @@ const $ = id => document.getElementById(id);
    CONFIGURAZIONE APPS SCRIPT
    ============================================================ */
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7at7fCSzHPNrVKYnPA4RIVb09Bm4TSiaOTwG8zlVCy5RLH09L7w2cCqEL4PaeSuoP/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4-v6YsBlqdJ7by9t793VuCXcunbQYvitdfU_j9XFXi1p2RIxqWs4r8wzSLHvaRJsR/exec";
 
 let state = { ricette: [] };
 let ricettaAperta = null;
