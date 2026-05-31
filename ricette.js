@@ -52,7 +52,6 @@ async function saveToDrive(){
     try{
         await fetch(SCRIPT_URL, {
             method: "POST",
-            headers: {"Content-Type":"application/json"},
             body: JSON.stringify(state)
         });
         localStorage.setItem("ricetteState", JSON.stringify(state));
