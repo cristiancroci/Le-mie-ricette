@@ -1,239 +1,118 @@
-/* BASE */
-:root{
-    --bg:#f5f7fb;
-    --card:#ffffff;
-    --text:#ffffff;
-}
-
 body{
     margin:0;
-    padding:0;
-    background:radial-gradient(circle at top,#e0e0e0,#adacac);
-    font-family:system-ui,sans-serif;
-    color:var(--text);
-    display:flex;
-    justify-content:center;
+    font-family:Arial, sans-serif;
+    background:#fafafa;
+    color:#222;
 }
 
-.app{
-    width:100%;
-    max-width:480px;
-    padding:20px 16px 40px;
-}
-
-/* TITOLO + SEMAFORO */
-.titleRow{
+header{
     display:flex;
+    justify-content:space-between;
     align-items:center;
-    justify-content:center;
-    gap:10px;
+    padding:15px;
+    background:#ff8c42;
+    color:white;
 }
 
-.backupLight{
-    width:14px;
-    height:14px;
+#backupLight{
+    width:16px;
+    height:16px;
     border-radius:50%;
     background:#444;
     box-shadow:0 0 6px rgba(0,0,0,0.4);
-    transition:0.25s;
 }
 
-.titleBox{
-    display:inline-block;
-    padding:10px 22px;
-    border-radius:14px;
-    background:linear-gradient(120deg,#ff6b6b,#f7b733,#00c9a7,#6a5acd,#ff6b6b);
-    background-size:400% 400%;
-    animation:titleGlow 6s ease infinite;
-    border:2px solid rgba(255,255,255,0.35);
-    box-shadow:0 0 18px rgba(255,255,255,0.35);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+#searchInput{
+    width:90%;
+    margin:15px auto;
+    display:block;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
 }
 
-.subtitle{
-    text-align:center;
-    font-size:.9rem;
-    color:#666;
-    margin-bottom:20px;
+#lista{
+    padding:10px;
 }
 
-/* CARD */
-.card{
-    background:white;
-    border-radius:16px;
-    padding:16px;
-    margin-bottom:18px;
-    box-shadow:0 12px 28px rgba(0,0,0,.06);
-    border:1px solid rgba(0,0,0,.04);
-}
-
-/* TITOLI CANGIANTI */
-h2, h3{
-    font-weight:700;
-    margin-bottom:10px;
-    background:linear-gradient(120deg,#ff6b6b,#f7b733,#00c9a7,#6a5acd,#ff6b6b);
-    background-size:400% 400%;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    animation:titleGlow 6s ease infinite;
-    text-shadow:0 0 12px rgba(255,255,255,0.35);
-}
-
-@keyframes titleGlow{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-/* INPUT */
-input,select,textarea{
-    width:100%;
-    padding:10px 12px;
-    border-radius:10px;
-    border:1px solid #d0d4f0;
-    background:#f9f9ff;
-    font-size:.95rem;
-    margin-bottom:10px;
-    transition:.2s;
-    box-sizing:border-box;
-    resize:vertical;
-}
-
-input:focus,select:focus,textarea:focus{
-    border-color:#6a5acd;
-    box-shadow:0 0 0 2px rgba(106,90,205,.2);
-    background:#fff;
-}
-
-/* BOTTONI */
-.btn{
-    width:100%;
-    padding:12px;
-    border-radius:999px;
-    border:none;
-    color:#fff;
-    font-weight:600;
-    font-size:1rem;
-    cursor:pointer;
-    background:linear-gradient(120deg,#ff6b6b,#f7b733,#00c9a7,#6a5acd);
-    background-size:300% 300%;
-    animation:gradientShift 6s ease infinite;
-    box-shadow:0 10px 20px rgba(0,0,0,.12);
-    margin-top:4px;
-}
-
-.btn-small{
-    padding:8px 14px;
-    border-radius:999px;
-    border:none;
-    color:#fff;
-    font-weight:500;
-    font-size:.85rem;
-    cursor:pointer;
-    background:linear-gradient(120deg,#00c96b,#3b7bff,#ff6b6b);
-    background-size:300% 300%;
-    animation:gradientShift 5s ease infinite;
-    box-shadow:0 6px 14px rgba(0,0,0,.12);
-}
-
-.btn-row{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:8px;
-}
-
-.btn-export{
-    padding:8px 14px;
-    border-radius:999px;
-    border:none;
-    color:#fff;
-    background:linear-gradient(450deg,#4a0000,#7a0f0f,#b81c1c);
-    background-size:250% 250%;
-    animation:gradientShift 5s ease infinite;
-}
-
-.btn-import{
-    padding:8px 14px;
-    border-radius:999px;
-    border:none;
-    color:#fff;
-    background:linear-gradient(120deg,#0a4f0a,#1f8f1f,#32c832);
-    background-size:250% 250%;
-    animation:gradientShift 5s ease infinite;
-}
-
-@keyframes gradientShift{
-    0%{background-position:0 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0 50%}
-}
-
-/* LISTA RICETTE */
 .entry{
     background:white;
-    border-radius:12px;
-    padding:10px;
+    padding:15px;
+    border-radius:10px;
     margin-bottom:10px;
-    border:1px solid #e4e6f5;
-    box-shadow:0 6px 14px rgba(0,0,0,.04);
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
     cursor:pointer;
 }
 
 .entryTitle{
-    font-weight:700;
-    font-size:1rem;
-    padding:4px 10px;
-    border-radius:10px;
-    background:rgba(0,0,0,0.35);
-    border:1px solid rgba(255,255,255,0.25);
-    backdrop-filter:blur(6px);
-
-    background-image:linear-gradient(120deg,#ff6b6b,#f7b733,#00c9a7,#6a5acd,#ff6b6b);
-    background-size:400% 400%;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    animation:titleGlow 6s ease infinite;
+    font-size:18px;
+    font-weight:bold;
 }
 
 .entryMeta{
-    font-size:.8rem;
-    color:#777;
+    font-size:14px;
+    color:#666;
 }
 
-/* DETTAGLIO */
-.detFoto{
-    width:100%;
-    max-height:260px;
-    object-fit:cover;
-    border-radius:12px;
-    margin-bottom:12px;
+.floatingBtn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#ff8c42;
+    color:white;
+    border:none;
+    border-radius:50%;
+    width:60px;
+    height:60px;
+    font-size:30px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
-.detMeta{
-    font-size:.9rem;
-    color:#555;
-    margin-bottom:12px;
+.backBtn{
+    margin:10px;
+    padding:10px;
+    font-size:20px;
 }
 
-/* TESTO DETTAGLIO — NERO SU BIANCO */
-#detIng, #detProc {
-    color:#222;
-    font-size:0.95rem;
-    line-height:1.55;
-    margin-bottom:12px;
+.box{
+    background:white;
+    padding:15px;
+    margin:10px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* ANIMAZIONE DETTAGLIO */
-#dettaglioView{
-    animation:fadeIn .3s ease;
+.detBtns{
+    display:flex;
+    justify-content:space-around;
+    margin:20px;
 }
 
-@keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
+.editBtn{
+    background:#4caf50;
+    color:white;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
 }
 
-/* NASCONDI INPUT FILE */
-#fileInput{display:none}
+.deleteBtn{
+    background:#e53935;
+    color:white;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+}
+
+.exportBtn, .importBtn{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    background:#555;
+    color:white;
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    margin-right:10px;
+}
