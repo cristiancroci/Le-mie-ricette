@@ -77,8 +77,15 @@ function aggiornaLista() {
 
       card.innerHTML = `
         <h3>${r.nome}</h3>
-        <p><strong>Ingredienti:</strong><br>${r.ingredienti.replace(/\n/g, "<br>")}</p>
-        <p><strong>Procedimento:</strong><br>${r.procedimento.replace(/\n/g, "<br>")}</p>
+        <div class="box-section">
+  <strong>Ingredienti</strong>
+  ${r.ingredienti.replace(/\n/g, "<br>")}
+</div>
+
+<div class="box-section">
+  <strong>Procedimento</strong>
+  ${r.procedimento.replace(/\n/g, "<br>")}
+</div>
 
         <div class="card-actions">
           <button class="btn-modifica" onclick="modificaRicetta(${i})">✏️ Modifica</button>
