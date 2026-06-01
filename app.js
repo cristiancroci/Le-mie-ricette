@@ -1,4 +1,4 @@
-const SCRIPT_URL = "QUI_LA_TUA_URL_EXEC";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFOREmrKqdwz3oah2DMxhS70mY7MEdjxUmLjWu4QoP-evmik4cQU28k3LTc6b9HWYX/exec";
 
 let ricette = [];
 let indexDaModificare = null;
